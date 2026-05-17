@@ -125,10 +125,10 @@ body {
   bottom: calc(var(--safe-bottom) + 1.85rem);
   left: calc(var(--safe-left) + 1.4rem);
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   font-weight: 300;
-  letter-spacing: 0.22em;
-  color: rgba(0,0,0,0.32);
+  letter-spacing: 0.18em;
+  color: rgba(0,0,0,0.38);
   z-index: 20;
   pointer-events: none;
 }
@@ -138,17 +138,19 @@ body {
   bottom: calc(var(--safe-bottom) + 1.2rem);
   right: calc(var(--safe-right) + 1.4rem);
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.5rem;
+  font-size: 0.65rem;
   font-weight: 300;
-  letter-spacing: 0.22em;
-  color: rgba(0,0,0,0.32);
+  letter-spacing: 0.18em;
+  color: rgba(0,0,0,0.38);
   background: none;
   border: none;
   cursor: pointer;
   z-index: 20;
-  padding: 10px 0 10px 10px; /* touch target generoso */
+  padding: 10px 0 10px 10px;
   line-height: 1;
+  transition: color 0.2s;
 }
+.lang:hover { color: rgba(0,0,0,0.65); }
 
 /* ── animations ── */
 @keyframes entra {
@@ -177,7 +179,7 @@ body {
   <div class="dot-track" id="dots"></div>
 </div>
 
-<span class="credit">TRRNGR</span>
+<span class="credit">© TRRNGR</span>
 <button class="lang" id="langBtn" aria-label="Switch language">EN</button>
 
 <script>
