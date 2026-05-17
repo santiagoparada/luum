@@ -120,6 +120,19 @@ body {
 .dot.active { background: rgba(0,0,0,0.6); }
 
 /* ── language toggle ── */
+.credit {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 1.85rem);
+  left: calc(var(--safe-left) + 1.4rem);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: rgba(0,0,0,0.32);
+  z-index: 20;
+  pointer-events: none;
+}
+
 .lang {
   position: fixed;
   bottom: calc(var(--safe-bottom) + 1.2rem);
@@ -164,6 +177,7 @@ body {
   <div class="dot-track" id="dots"></div>
 </div>
 
+<span class="credit">TRRNGR</span>
 <button class="lang" id="langBtn" aria-label="Switch language">EN</button>
 
 <script>
@@ -531,3 +545,4 @@ if ("serviceWorker" in navigator) {
 </script>
 </body>
 </html>
+
