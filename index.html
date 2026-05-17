@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#FFE500">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LUUM">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="LUUM">
+<title>LUUM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@200;300&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --safe-top:    env(safe-area-inset-top,    20px);
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+  --safe-left:   env(safe-area-inset-left,   0px);
+  --safe-right:  env(safe-area-inset-right,  0px);
+}
+
+html {
+  height: 100%;
+  height: -webkit-fill-available;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  background-color: #FFE500;
+  transition: background-color 0.5s ease;
+  padding-top:    var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left:   var(--safe-left);
+  padding-right:  var(--safe-right);
+}
+
+/* ── card ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 2.2rem;
+  width: 100%;
+  max-width: 480px;
+  flex: 1;
+}
+
+.frase {
+  font-size: clamp(1.45rem, 6.5vw, 2rem);
+  font-weight: 300;
+  color: #000;
+  line-height: 1.28;
+  letter-spacing: -0.018em;
+}
+
+.sep {
+  width: 18px;
+  height: 1px;
+  background: rgba(0,0,0,0.25);
+  margin: 1.6rem auto;
+  flex-shrink: 0;
+}
+
+.accion {
+  font-size: clamp(0.82rem, 3.6vw, 0.9rem);
+  font-weight: 300;
+  color: rgba(0,0,0,0.62);
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+}
+
+.accion + .accion {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+
+/* ── footer bar ── */
+.footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem 0.5rem;
+  flex-shrink: 0;
+  gap: 0.9rem;
+}
+
+.counter {
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: rgba(0,0,0,0.32);
+}
+
+.dot-track { display: flex; gap: 5px; align-items: center; }
+
+.dot {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.18);
+  transition: background 0.3s ease;
+}
+.dot.active { background: rgba(0,0,0,0.6); }
+
+/* ── language toggle ── */
+.lang {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 1.2rem);
+  right: calc(var(--safe-right) + 1.4rem);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: rgba(0,0,0,0.32);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  padding: 10px 0 10px 10px; /* touch target generoso */
+  line-height: 1;
+}
+
+/* ── animations ── */
+@keyframes entra {
+  0%   { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes sale {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-8px); }
+}
+.entra { animation: entra 0.5s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+.sale  { animation: sale  0.28s cubic-bezier(0.55,0.06,0.68,0.19) forwards; }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+  <p class="frase"  id="frase"></p>
+  <div class="sep"></div>
+  <p class="accion" id="acc1"></p>
+  <p class="accion" id="acc2"></p>
+</div>
+
+<div class="footer">
+  <span class="counter" id="counter"></span>
+  <div class="dot-track" id="dots"></div>
+</div>
+
+<button class="lang" id="langBtn" aria-label="Switch language">EN</button>
+
+<script>
+const contenido = {
+  es: {
+    frases: [
+      "¿Qué harías si nadie te pudiera ver?",
+      "El error como maestro.",
+      "Destruye la mitad.",
+      "Cambia el material.",
+      "¿Qué dice el silencio?",
+      "Trabaja con lo que encuentres en el suelo.",
+      "Empieza desde el final.",
+      "¿Cuál es la versión más lenta?",
+      "Repite hasta que cambie de sentido.",
+      "Ignora las instrucciones anteriores.",
+      "¿Qué no se puede mostrar?",
+      "El cuerpo como superficie.",
+      "Traduce esto a otro sentido.",
+      "¿Quién no está en la sala?",
+      "Rompe la pieza y empieza de nuevo.",
+      "¿Cuál es el gesto mínimo?",
+      "Dale forma al vacío.",
+      "El proceso es la obra.",
+      "¿Qué harías si solo tuvieras un día?",
+      "Intercambia los roles.",
+      "Haz que alguien más lo termine.",
+      "¿Qué es lo que no quieres hacer?",
+      "Usa solo lo que tienes ahora.",
+      "Pregúntale al material.",
+      "Deja entrar el azar.",
+      "¿Qué pasaría si esto fuera enorme?",
+      "Trabaja desde el límite.",
+      "Convierte la restricción en poética.",
+      "¿Qué hace el cuerpo cuando no piensa?",
+      "Observa lo que ignoras habitualmente.",
+      "Empieza por lo que te da vergüenza.",
+      "La obra existe antes de que la hagas.",
+      "¿Cuál es la versión más honesta?",
+      "Trabaja con el tiempo, no contra él.",
+      "¿Qué pasaría si esto fuera invisible?",
+      "Nombra lo que no tiene nombre.",
+      "Deja que la forma decida.",
+      "¿Para quién estás haciendo esto?",
+      "Borra lo que más te gusta.",
+      "¿Cuál sería la versión colectiva?",
+      "El espectador también completa la obra.",
+      "Trabaja en un idioma que no sea el tuyo.",
+      "¿Qué se pierde en la traducción?",
+      "La distancia como método.",
+      "Invita a la contradicción.",
+      "Trabaja como si fuera un documento.",
+      "¿Qué pasaría si no hubiera imagen?",
+      "El contexto es parte de la obra.",
+      "Haz algo que no puedas explicar.",
+      "¿Cuál es la versión para otro cuerpo?",
+      "El espacio es la definición del espacio.",
+      "La obra vive en lo que activa, no en lo que es.",
+      "Hazlo bien. Luego pregunta para qué.",
+      "El objeto toca desde lejos.",
+      "Lo deseable solo existe en el momento de su activación.",
+      "Cada vez que se hace, se hace por primera vez.",
+      "La promesa del objeto no es parte del objeto.",
+      "El material también hace el espacio.",
+      "Preguntar también es una habilidad.",
+      "¿Es decoración o es pregunta?",
+      "El riesgo solo existe mientras dura.",
+      "El edificio no termina donde terminan sus paredes.",
+      "El imaginario del objeto no tiene fuente visible.",
+      "Haz algo que pueda influirte de vuelta.",
+      "Aceptar la forma es aceptar lo que viene con ella.",
+      "La relación con el material es también una proposición.",
+      "El oficio es el toque que llega lejos.",
+      "La autenticidad también es una tautología.",
+      "Todo es ya conceptual. Todo es ya espacio.",
+      "El valor no está en el objeto. Tampoco en la idea."
+    ],
+    acciones: [
+      "Sal al espacio público. Documenta lo que encuentres, no lo que buscabas.",
+      "Trabaja durante una hora sin hablar ni pensar en el resultado.",
+      "Hazlo en un material que nunca hayas usado.",
+      "Invita a alguien ajeno a tu práctica a tomar una decisión.",
+      "Registra el proceso. Destruye el resultado.",
+      "Trabaja en la oscuridad o con los ojos cerrados.",
+      "Reduce la escala hasta que casi desaparezca.",
+      "Amplía la escala hasta que no quepa en el espacio.",
+      "Repite la misma acción cien veces.",
+      "Trabaja solo con lo que cabe en los bolsillos.",
+      "Cambia el contexto sin cambiar la obra.",
+      "Trabaja en un espacio que no es tuyo.",
+      "Documenta lo que ocurre antes y después. No durante.",
+      "Hazlo en el tiempo más corto posible.",
+      "Hazlo en el tiempo más largo posible.",
+      "Elimina todo lo visual. Deja solo el sonido.",
+      "Elimina todo el sonido. Deja solo lo visual.",
+      "Trabaja sin herramientas fabricadas.",
+      "Que el resultado no pueda ser guardado ni reproducido.",
+      "Haz algo que solo exista en la memoria de quien estuvo presente.",
+      "Introduce un elemento que claramente no debería estar ahí.",
+      "Explica la obra a alguien sin mostrársela.",
+      "Muestra la obra sin explicarla. No respondas preguntas.",
+      "Comienza donde normalmente terminarías.",
+      "Trabaja a partir de un archivo que no creaste tú.",
+      "Escribe instrucciones para que otra persona ejecute la obra.",
+      "Haz una versión efímera, pensada para desaparecer.",
+      "Trabaja en vivo, frente a otros, sin preparación previa.",
+      "Convierte el error en el centro de la pieza.",
+      "La obra está en lo que descartaste.",
+      "Usa solo materiales del lugar donde estás ahora.",
+      "Deja que el clima o el entorno tomen una decisión.",
+      "Trabaja sin saber qué vas a hacer hasta que empieces.",
+      "Documenta las dudas. No las certezas.",
+      "Presenta el boceto como la obra final.",
+      "Trabaja solo con lo que ya existe en el espacio.",
+      "Haz que la obra requiera al espectador para existir.",
+      "Crea algo que funcione solo en un momento específico del día.",
+      "Haz lo mismo que hiciste ayer, pero al revés.",
+      "Dale la obra a alguien y no vuelvas a tocarla.",
+      "Trabaja en colaboración con alguien que no conoces.",
+      "Haz una versión en miniatura y una versión monumental.",
+      "Trabaja solo con un color. O solo sin color.",
+      "Que la obra no tenga interior ni exterior.",
+      "Haz que el cuerpo sea el único material.",
+      "Trabaja de noche.",
+      "Haz algo que no puedas mostrar en una pantalla.",
+      "Convierte el tiempo de espera en la obra.",
+      "Trabaja a partir de una instrucción que alguien más escribió.",
+      "Ocupa el espacio durante 24 horas. No lo abandones."
+    ]
+  },
+  en: {
+    frases: [
+      "What would you do if no one could see you?",
+      "The mistake as teacher.",
+      "Destroy half.",
+      "Change the material.",
+      "What does silence say?",
+      "Work with what you find on the ground.",
+      "Start from the end.",
+      "What is the slowest version?",
+      "Repeat until it changes meaning.",
+      "Ignore the previous instructions.",
+      "What cannot be shown?",
+      "The body as surface.",
+      "Translate this to another sense.",
+      "Who is not in the room?",
+      "Break the piece and start again.",
+      "What is the minimal gesture?",
+      "Give form to the void.",
+      "The process is the work.",
+      "What would you do if you only had one day?",
+      "Swap the roles.",
+      "Have someone else finish it.",
+      "What is it that you don't want to do?",
+      "Use only what you have right now.",
+      "Ask the material.",
+      "Let chance in.",
+      "What if this were enormous?",
+      "Work from the edge.",
+      "Turn the constraint into poetics.",
+      "What does the body do when it stops thinking?",
+      "Observe what you usually ignore.",
+      "Start with what embarrasses you.",
+      "The work exists before you make it.",
+      "What is the most honest version?",
+      "Work with time, not against it.",
+      "What if this were invisible?",
+      "Name what has no name.",
+      "Let the form decide.",
+      "Who are you making this for?",
+      "Erase what you like most.",
+      "What would the collective version be?",
+      "The viewer completes the work too.",
+      "Work in a language that is not yours.",
+      "What is lost in translation?",
+      "Distance as method.",
+      "Invite contradiction.",
+      "Work as if it were a document.",
+      "What if there were no image?",
+      "Context is part of the work.",
+      "Do something you cannot explain.",
+      "What is the version for another body?",
+      "Space is the definition of space.",
+      "The work lives in what it activates, not in what it is.",
+      "Do it well. Then ask what for.",
+      "The object touches from afar.",
+      "The desirable only exists in the moment of its activation.",
+      "Each time it is made, it is made for the first time.",
+      "The promise of the object is not part of the object.",
+      "The material also makes the space.",
+      "Asking is also a skill.",
+      "Is it decoration or is it a question?",
+      "Risk only exists while it lasts.",
+      "The building does not end where its walls end.",
+      "The imaginary of the object has no visible source.",
+      "Make something that can influence you back.",
+      "Accepting the form means accepting what comes with it.",
+      "The relationship with the material is also a proposition.",
+      "Craft is the touch that reaches far.",
+      "Authenticity is also a tautology.",
+      "Everything is already conceptual. Everything is already space.",
+      "The value is not in the object. Nor in the idea."
+    ],
+    acciones: [
+      "Go to a public space. Document what you find, not what you were looking for.",
+      "Work for one hour without speaking or thinking about the outcome.",
+      "Do it in a material you have never used.",
+      "Invite someone outside your practice to make a decision.",
+      "Record the process. Destroy the result.",
+      "Work in the dark or with your eyes closed.",
+      "Reduce the scale until it almost disappears.",
+      "Expand the scale until it no longer fits in the space.",
+      "Repeat the same action one hundred times.",
+      "Work only with what fits in your pockets.",
+      "Change the context without changing the work.",
+      "Work in a space that is not yours.",
+      "Document what happens before and after. Not during.",
+      "Do it in the shortest time possible.",
+      "Do it in the longest time possible.",
+      "Remove everything visual. Leave only sound.",
+      "Remove all sound. Leave only the visual.",
+      "Work without manufactured tools.",
+      "Let the result be neither storable nor reproducible.",
+      "Make something that exists only in the memory of those who were present.",
+      "Introduce an element that clearly does not belong there.",
+      "Explain the work to someone without showing it.",
+      "Show the work without explaining it. Answer no questions.",
+      "Begin where you would normally end.",
+      "Work from a file or document you did not create.",
+      "Write instructions for someone else to execute the work.",
+      "Make an ephemeral version, designed to disappear.",
+      "Work live, in front of others, without prior preparation.",
+      "Make the mistake the center of the piece.",
+      "The work is in what you discarded.",
+      "Use only materials from the place where you are right now.",
+      "Let the weather or the environment make a decision.",
+      "Work without knowing what you will do until you begin.",
+      "Document the doubts. Not the certainties.",
+      "Present the sketch as the final work.",
+      "Work only with what already exists in the space.",
+      "Make the work require the viewer to exist.",
+      "Create something that only works at a specific moment of the day.",
+      "Do the same thing you did yesterday, but in reverse.",
+      "Give the work to someone and never touch it again.",
+      "Work in collaboration with someone you do not know.",
+      "Make a miniature version and a monumental version.",
+      "Work with only one color. Or with no color at all.",
+      "Let the work have neither inside nor outside.",
+      "Make the body the only material.",
+      "Work at night.",
+      "Make something you cannot show on a screen.",
+      "Turn the waiting time into the work.",
+      "Work from an instruction that someone else wrote.",
+      "Occupy the space for 24 hours. Do not leave it."
+    ]
+  }
+};
+
+const colores = [
+  '#FFE500','#FF4500','#FF0066','#00DDAA',
+  '#A8FF3C','#00AAFF','#FF8800','#CC44FF',
+  '#FF2244','#00FFD0','#FFCC00','#44FF88',
+  '#FF99BB','#66AAFF','#CCFF44'
+];
+
+let idioma = 'es';
+let tiro = 0;
+let colorActual = 0;
+let transitando = false;
+
+const fraseEl   = document.getElementById('frase');
+const acc1El    = document.getElementById('acc1');
+const acc2El    = document.getElementById('acc2');
+const counterEl = document.getElementById('counter');
+const dotsEl    = document.getElementById('dots');
+const card      = document.getElementById('card');
+const langBtn   = document.getElementById('langBtn');
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+const DOTS = 5;
+for (let i = 0; i < DOTS; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  dotsEl.appendChild(d);
+}
+
+function r(arr) { return Math.floor(Math.random() * arr.length); }
+
+function lanzar() {
+  const c = contenido[idioma];
+  const iF  = r(c.frases);
+  const iA1 = r(c.acciones);
+  let iA2; do { iA2 = r(c.acciones); } while (iA2 === iA1);
+  let iC;  do { iC  = r(colores);    } while (iC === colorActual);
+  colorActual = iC;
+  return { f: c.frases[iF], a1: c.acciones[iA1], a2: c.acciones[iA2], col: colores[iC] };
+}
+
+function actualizarDots() {
+  dotsEl.querySelectorAll('.dot').forEach((d, i) =>
+    d.classList.toggle('active', i === tiro % DOTS));
+}
+
+function mostrar(datos) {
+  fraseEl.textContent = datos.f;
+  acc1El.textContent  = datos.a1;
+  acc2El.textContent  = datos.a2;
+  document.body.style.backgroundColor = datos.col;
+  themeMeta.setAttribute('content', datos.col);
+  counterEl.textContent = String(tiro + 1).padStart(3, '0');
+  actualizarDots();
+  card.classList.remove('sale');
+  card.classList.add('entra');
+}
+
+function siguiente() {
+  if (transitando) return;
+  transitando = true;
+  card.classList.remove('entra');
+  card.classList.add('sale');
+  setTimeout(() => { tiro++; mostrar(lanzar()); transitando = false; }, 290);
+}
+
+function cambiarIdioma(e) {
+  e.stopPropagation();
+  idioma = idioma === 'es' ? 'en' : 'es';
+  langBtn.textContent = idioma === 'es' ? 'EN' : 'ES';
+  document.documentElement.lang = idioma;
+  const c = contenido[idioma];
+  const iF  = r(c.frases);
+  const iA1 = r(c.acciones);
+  let iA2; do { iA2 = r(c.acciones); } while (iA2 === iA1);
+  card.classList.remove('entra');
+  card.classList.add('sale');
+  setTimeout(() => {
+    fraseEl.textContent = c.frases[iF];
+    acc1El.textContent  = c.acciones[iA1];
+    acc2El.textContent  = c.acciones[iA2];
+    card.classList.remove('sale');
+    card.classList.add('entra');
+  }, 290);
+}
+
+mostrar(lanzar());
+
+document.body.addEventListener('click', siguiente);
+langBtn.addEventListener('click', cambiarIdioma);
+
+document.addEventListener('keydown', e => {
+  if (['Space','ArrowRight','ArrowDown','Enter'].includes(e.code)) {
+    e.preventDefault(); siguiente();
+  }
+});
+
+let ty = 0;
+document.addEventListener('touchstart', e => { ty = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+  if (Math.abs(ty - e.changedTouches[0].clientY) > 25) siguiente();
+}, { passive: true });
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
+</body>
+</html>
