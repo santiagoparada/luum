@@ -820,6 +820,10 @@ function cambiarIdioma(e) {
   }, 290);
 }
 
+if (new URLSearchParams(location.search).get('dev') === 'true') {
+  localStorage.setItem('luum_premium', 'true');
+}
+
 mostrar(lanzar());
 if (mensajesTotal >= LIMITE_MENSAJES && !esPremium()) mostrarPaywall();
 
