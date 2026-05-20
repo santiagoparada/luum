@@ -1,0 +1,12 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.suo
+*.user
+
+# Node (por si acaso para cuando llegue Bubblewrap)
+node_modules/
+*.log
