@@ -152,6 +152,75 @@ body {
 }
 .lang:hover { color: rgba(0,0,0,0.65); }
 
+/* ── info button ── */
+.info {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 1.2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  color: rgba(0,0,0,0.38);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+  padding: 10px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.info:hover { color: rgba(0,0,0,0.65); }
+ 
+/* ── info overlay ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.4rem calc(var(--safe-bottom) + 4rem);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.overlay.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+.overlay-text {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(0.9rem, 4vw, 1.05rem);
+  font-weight: 300;
+  color: rgba(0,0,0,0.75);
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  text-align: center;
+  max-width: 420px;
+}
+.overlay-close {
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 1.2rem);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  color: rgba(0,0,0,0.38);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 110;
+  padding: 10px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.overlay-close:hover { color: rgba(0,0,0,0.65); }
+ 
 /* ── animations ── */
 @keyframes entra {
   0%   { opacity: 0; transform: translateY(10px); }
@@ -180,7 +249,13 @@ body {
 </div>
 
 <span class="credit">© TRRNGR</span>
+<button class="info" id="infoBtn" aria-label="About">INSTRUCCIONES</button>
 <button class="lang" id="langBtn" aria-label="Switch language">EN</button>
+
+<div class="overlay" id="overlay">
+  <p class="overlay-text" id="overlayText"></p>
+</div>
+<button class="overlay-close" id="overlayClose" style="display:none">CERRAR</button>
 
 <script>
 const contenido = {
@@ -518,14 +593,23 @@ let tiro = 0;
 let colorActual = 0;
 let transitando = false;
 
-const fraseEl   = document.getElementById('frase');
-const acc1El    = document.getElementById('acc1');
-const acc2El    = document.getElementById('acc2');
-const counterEl = document.getElementById('counter');
-const dotsEl    = document.getElementById('dots');
-const card      = document.getElementById('card');
-const langBtn   = document.getElementById('langBtn');
-const themeMeta = document.querySelector('meta[name="theme-color"]');
+const textoInfo = {
+  es: "LUUM es una app generativa de estrategias creativas. Más de 170.000 combinaciones posibles. Toca la pantalla y aparece una mezcla aleatoria de ideas, preguntas y proposiciones de acción. Cada tiro es distinto. Ninguno se repite igual. Úsala cuando no sabes por dónde empezar, cuando llevas demasiado tiempo en el mismo punto, o cuando simplemente quieres ver tu trabajo desde otro ángulo. Para artistas, docentes, equipos de trabajo, improvisadores, estudiantes. Para cualquiera que necesite un empujón.",
+  en: "LUUM is a generative app for creative strategies. Over 170,000 possible combinations. Tap the screen and a random mix of ideas, questions and action propositions appears. Every throw is different. None repeats exactly. Use it when you don't know where to start, when you've been stuck too long in the same place, or when you simply want to see your work from a different angle. For artists, teachers, work teams, improvisers, students. For anyone who needs a push."
+};
+
+const fraseEl      = document.getElementById('frase');
+const acc1El       = document.getElementById('acc1');
+const acc2El       = document.getElementById('acc2');
+const counterEl    = document.getElementById('counter');
+const dotsEl       = document.getElementById('dots');
+const card         = document.getElementById('card');
+const langBtn      = document.getElementById('langBtn');
+const themeMeta    = document.querySelector('meta[name="theme-color"]');
+const infoBtn      = document.getElementById('infoBtn');
+const overlay      = document.getElementById('overlay');
+const overlayText  = document.getElementById('overlayText');
+const overlayClose = document.getElementById('overlayClose');
 
 const DOTS = 5;
 for (let i = 0; i < DOTS; i++) {
@@ -593,7 +677,29 @@ function cambiarIdioma(e) {
 
 mostrar(lanzar());
 
-document.body.addEventListener('click', siguiente);
+function abrirInfo(e) {
+  e.stopPropagation();
+  overlayText.textContent = textoInfo[idioma];
+  overlay.style.backgroundColor = document.body.style.backgroundColor || '#FFE500';
+  overlay.classList.add('visible');
+  overlayClose.style.display = 'block';
+  infoBtn.style.display = 'none';
+}
+
+function cerrarInfo(e) {
+  e.stopPropagation();
+  overlay.classList.remove('visible');
+  overlayClose.style.display = 'none';
+  infoBtn.style.display = 'block';
+}
+
+infoBtn.addEventListener('click', abrirInfo);
+overlayClose.addEventListener('click', cerrarInfo);
+
+document.body.addEventListener('click', (e) => {
+  if (overlay.classList.contains('visible')) { cerrarInfo(e); return; }
+  siguiente();
+});
 langBtn.addEventListener('click', cambiarIdioma);
 
 document.addEventListener('keydown', e => {
@@ -615,5 +721,3 @@ if ("serviceWorker" in navigator) {
 </script>
 </body>
 </html>
-
- 
