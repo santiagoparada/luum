@@ -237,50 +237,6 @@ body {
 }
 .overlay-close:hover { color: rgba(0,0,0,0.65); }
 
-/* ── paywall ── */
-.paywall {
-  position: fixed;
-  inset: 0;
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem 2.4rem;
-  z-index: 200;
-  text-align: center;
-}
-.paywall-title {
-  font-size: clamp(1.4rem, 6vw, 1.8rem);
-  font-weight: 300;
-  color: rgba(0,0,0,0.85);
-  line-height: 1.3;
-  letter-spacing: -0.015em;
-  margin-bottom: 1.4rem;
-  max-width: 380px;
-}
-.paywall-sub {
-  font-size: clamp(0.85rem, 3.8vw, 1rem);
-  font-weight: 300;
-  color: rgba(0,0,0,0.62);
-  line-height: 1.7;
-  letter-spacing: 0.01em;
-  margin-bottom: 2.5rem;
-  max-width: 360px;
-}
-.paywall-btn {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 300;
-  letter-spacing: 0.22em;
-  color: rgba(0,0,0,0.75);
-  background: rgba(0,0,0,0.1);
-  border: 1px solid rgba(0,0,0,0.25);
-  padding: 0.85rem 2rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.paywall-btn:hover { background: rgba(0,0,0,0.18); }
-
 /* ── animations ── */
 @keyframes entra {
   0%   { opacity: 0; transform: translateY(10px); }
@@ -324,12 +280,6 @@ body {
   <p class="overlay-text" id="termsText"></p>
 </div>
 <button class="overlay-close" id="overlayClose" style="display:none">CERRAR</button>
-
-<div class="paywall" id="paywall">
-  <p class="paywall-title" id="paywallTitle"></p>
-  <p class="paywall-sub"   id="paywallSub"></p>
-  <button class="paywall-btn" id="paywallBtn"></button>
-</div>
 
 <script>
 const contenido = {
@@ -666,8 +616,6 @@ let idioma = 'es';
 let mensaje = 0;
 let colorActual = 0;
 let transitando = false;
-let mensajesTotal = parseInt(localStorage.getItem('luum_mensajes') || '0');
-const LIMITE_MENSAJES = 10;
 
 const textoInfo = {
   es: "LUUM es una app generativa de estrategias creativas con más de 170.000 combinaciones posibles. Cuando tocas la pantalla o haces click aparece una mezcla aleatoria de ideas, preguntas y proposiciones de acción. Cada mensaje es diferente. Úsala cuando necesitas un detonante creativo, cuando necesitas desbloquear una idea, cuando quieras ver tus procesos desde otro ángulo. Una herramienta para artistas, docentes, equipos de trabajo, improvisadores, estudiantes, CEOs. Una herramienta que expande tu creatividad.",
@@ -675,21 +623,8 @@ const textoInfo = {
 };
 
 const textoTerminos = {
-  es: "Acceso y pago\nLUUM ofrece 10 mensajes gratuitos. El acceso ilimitado cuesta $7 USD, pago único y de por vida. Sin suscripciones, sin cobros adicionales. Este pago te da acceso completo al contenido de LUUM como usuario final. No otorga derechos sobre el sistema, el código ni la marca.\n\nUso personal y educativo\nLUUM es libre para uso personal y educativo sin fines de lucro. El único requisito es mantener el crédito visible: © TRRNGR.\n\nUso comercial y adaptaciones\nEl pago de $7 USD no es una licencia comercial. Cualquier uso de LUUM con fines comerciales — adaptaciones, versiones derivadas, implementaciones para empresas o talleres pagos — requiere un acuerdo separado con TRRNGR. Escríbenos: parada.santi@gmail.com\n\nDatos y privacidad\nLUUM no recolecta datos personales ni usa cookies de seguimiento. El único dato que guarda es el conteo de mensajes, almacenado localmente en tu dispositivo.\n\nContenido\nEl contenido de LUUM puede evolucionar sin previo aviso. Eso es parte de su naturaleza.\n\n© TRRNGR. Todos los derechos reservados sobre el sistema, el contenido y la marca.",
-  en: "Access and payment\nLUUM offers 10 free messages. Unlimited access costs $7 USD, a one-time lifetime payment. No subscriptions, no additional charges. This payment gives you full access to LUUM as an end user. It does not grant rights over the system, the code or the brand.\n\nPersonal and educational use\nLUUM is free for personal and non-commercial educational use. The only requirement is keeping the credit visible: © TRRNGR.\n\nCommercial use and adaptations\nThe $7 USD payment is not a commercial license. Any commercial use of LUUM — adaptations, derivative versions, implementations for companies or paid workshops — requires a separate agreement with TRRNGR. Write to us: parada.santi@gmail.com\n\nData and privacy\nLUUM does not collect personal data or use tracking cookies. The only data it stores is your message count, saved locally on your device.\n\nContent\nLUUM's content may evolve without notice. That's part of its nature.\n\n© TRRNGR. All rights reserved over the system, content and brand."
-};
-
-const textosPaywall = {
-  es: {
-    titulo: "Con esta app tu creatividad no tiene límite.",
-    sub: "Más de 170.000 mensajes posibles te esperan. Desbloquea LUUM por $7 USD — pago único, de por vida.",
-    btn: "DESBLOQUEAR"
-  },
-  en: {
-    titulo: "With this app your creativity has no limits.",
-    sub: "Over 170,000 possible messages await you. Unlock LUUM for $7 USD — one-time payment, for life.",
-    btn: "UNLOCK"
-  }
+  es: "Acceso\nLUUM es completamente gratuita. Sin pagos, sin suscripciones, sin cobros de ningún tipo. Descárgala, úsala, compártela.\n\nUso personal y educativo\nLUUM es libre para uso personal y educativo sin fines de lucro. El único requisito es mantener el crédito visible: © TRRNGR.\n\nUso comercial y adaptaciones\nEl pago de $7 USD no es una licencia comercial. Cualquier uso de LUUM con fines comerciales — adaptaciones, versiones derivadas, implementaciones para empresas o talleres pagos — requiere un acuerdo separado con TRRNGR. Escríbenos: parada.santi@gmail.com\n\nDatos y privacidad\nLUUM no recolecta datos personales ni usa cookies de seguimiento. El único dato que guarda es el conteo de mensajes, almacenado localmente en tu dispositivo.\n\nContenido\nEl contenido de LUUM puede evolucionar sin previo aviso. Eso es parte de su naturaleza.\n\n© TRRNGR. Todos los derechos reservados sobre el sistema, el contenido y la marca.",
+  en: "Access\nLUUM is completely free. No payments, no subscriptions, no charges of any kind. Download it, use it, share it.\n\nPersonal and educational use\nLUUM is free for personal and non-commercial educational use. The only requirement is keeping the credit visible: © TRRNGR.\n\nCommercial use and adaptations\nThe $7 USD payment is not a commercial license. Any commercial use of LUUM — adaptations, derivative versions, implementations for companies or paid workshops — requires a separate agreement with TRRNGR. Write to us: parada.santi@gmail.com\n\nData and privacy\nLUUM does not collect personal data or use tracking cookies. The only data it stores is your message count, saved locally on your device.\n\nContent\nLUUM's content may evolve without notice. That's part of its nature.\n\n© TRRNGR. All rights reserved over the system, content and brand."
 };
 
 const fraseEl       = document.getElementById('frase');
@@ -707,10 +642,6 @@ const overlayText   = document.getElementById('overlayText');
 const termsOverlay  = document.getElementById('termsOverlay');
 const termsText     = document.getElementById('termsText');
 const overlayClose  = document.getElementById('overlayClose');
-const paywallEl     = document.getElementById('paywall');
-const paywallTitle  = document.getElementById('paywallTitle');
-const paywallSub    = document.getElementById('paywallSub');
-const paywallBtn    = document.getElementById('paywallBtn');
 
 const DOTS = 5;
 for (let i = 0; i < DOTS; i++) {
@@ -720,10 +651,6 @@ for (let i = 0; i < DOTS; i++) {
 }
 
 function r(arr) { return Math.floor(Math.random() * arr.length); }
-
-function esPremium() {
-  return localStorage.getItem('luum_premium') === 'true';
-}
 
 function lanzar() {
   const c = contenido[idioma];
@@ -752,31 +679,15 @@ function mostrar(datos) {
   card.classList.add('entra');
 }
 
-function mostrarPaywall() {
-  if (esPremium()) return;
-  const t = textosPaywall[idioma];
-  paywallTitle.textContent = t.titulo;
-  paywallSub.textContent   = t.sub;
-  paywallBtn.textContent   = t.btn;
-  paywallEl.style.backgroundColor = document.body.style.backgroundColor || '#FFE500';
-  paywallEl.style.display = 'flex';
-  infoBtn.style.display  = 'none';
-  termsBtn.style.display = 'none';
-}
-
 function siguiente() {
   if (transitando) return;
-  if (mensajesTotal >= LIMITE_MENSAJES && !esPremium()) { mostrarPaywall(); return; }
   transitando = true;
   card.classList.remove('entra');
   card.classList.add('sale');
   setTimeout(() => {
     mensaje++;
-    mensajesTotal++;
-    localStorage.setItem('luum_mensajes', mensajesTotal);
     mostrar(lanzar());
     transitando = false;
-    if (mensajesTotal >= LIMITE_MENSAJES && !esPremium()) mostrarPaywall();
   }, 290);
 }
 
@@ -817,12 +728,6 @@ function cambiarIdioma(e) {
 
   if (overlay.classList.contains('visible')) overlayText.textContent = textoInfo[idioma];
   if (termsOverlay.classList.contains('visible')) termsText.textContent = textoTerminos[idioma];
-  if (paywallEl.style.display === 'flex') {
-    const t = textosPaywall[idioma];
-    paywallTitle.textContent = t.titulo;
-    paywallSub.textContent   = t.sub;
-    paywallBtn.textContent   = t.btn;
-  }
 
   const c = contenido[idioma];
   const iF  = r(c.frases);
@@ -839,25 +744,14 @@ function cambiarIdioma(e) {
   }, 290);
 }
 
-if (new URLSearchParams(location.search).get('dev') === 'true') {
-  localStorage.setItem('luum_premium', 'true');
-}
-
 mostrar(lanzar());
-if (mensajesTotal >= LIMITE_MENSAJES && !esPremium()) mostrarPaywall();
 
 infoBtn.addEventListener('click', abrirInfo);
 termsBtn.addEventListener('click', abrirTerminos);
 overlayClose.addEventListener('click', cerrarOverlay);
 langBtn.addEventListener('click', cambiarIdioma);
 
-paywallBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  alert('Próximamente / Coming soon');
-});
-
 document.body.addEventListener('click', (e) => {
-  if (paywallEl.style.display === 'flex') return;
   if (overlay.classList.contains('visible') || termsOverlay.classList.contains('visible')) {
     cerrarOverlay(e);
     return;
@@ -877,13 +771,7 @@ document.addEventListener('touchend', e => {
   if (Math.abs(ty - e.changedTouches[0].clientY) > 25) siguiente();
 }, { passive: true });
 
-window.addEventListener('storage', () => {
-  if (esPremium() && paywallEl.style.display === 'flex') {
-    paywallEl.style.display = 'none';
-    infoBtn.style.display  = '';
-    termsBtn.style.display = '';
-  }
-});
+
 </script>
 <script>
 if ("serviceWorker" in navigator) {
