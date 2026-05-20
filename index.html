@@ -43,7 +43,7 @@ body {
   background-color: #FFE500;
   transition: background-color 0.5s ease;
   padding-top:    var(--safe-top);
-  padding-bottom: var(--safe-bottom);
+  padding-bottom: calc(var(--safe-bottom) + 7rem);
   padding-left:   var(--safe-left);
   padding-right:  var(--safe-right);
 }
@@ -91,15 +91,18 @@ body {
   border-top: 1px solid rgba(0,0,0,0.1);
 }
 
-/* ── footer bar ── */
+/* ── footer bar — fixed, above the bottom buttons ── */
 .footer {
-  width: 100%;
+  position: fixed;
+  bottom: calc(var(--safe-bottom) + 4.5rem);
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2rem 0.5rem;
-  flex-shrink: 0;
   gap: 0.9rem;
+  z-index: 20;
+  pointer-events: none;
 }
 
 .counter {
@@ -119,24 +122,32 @@ body {
 }
 .dot.active { background: rgba(0,0,0,0.6); }
 
-/* ── bottom bar — flex row, no overlap on any screen ── */
+/* ── bottom bar — 3-column flex: credit | center-pair | lang ── */
 .bottom-bar {
   position: fixed;
-  bottom: 0;
+  bottom: calc(var(--safe-bottom) + 1.8rem);
   left: 0;
   right: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.5rem 1.2rem calc(var(--safe-bottom) + 0.5rem);
+  padding: 0 1.4rem;
   z-index: 210;
   pointer-events: none;
 }
 .bottom-bar > * { pointer-events: auto; }
 
+.bottom-bar-center {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  pointer-events: none;
+}
+.bottom-bar-center > * { pointer-events: auto; }
+
 .credit {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   letter-spacing: 0.18em;
   color: rgba(0,0,0,0.38);
@@ -146,7 +157,7 @@ body {
 
 .info, .terms-btn, .lang {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 300;
   letter-spacing: 0.18em;
   color: rgba(0,0,0,0.38);
@@ -159,6 +170,11 @@ body {
   white-space: nowrap;
 }
 .info:hover, .terms-btn:hover, .lang:hover { color: rgba(0,0,0,0.65); }
+
+@media (max-width: 390px) {
+  .info, .terms-btn { letter-spacing: 0.12em; }
+  .bottom-bar-center { gap: 1rem; }
+}
 
 /* ── overlays (info + terms) ── */
 .overlay {
@@ -199,10 +215,11 @@ body {
   font-size: clamp(0.75rem, 3vw, 0.88rem);
   text-align: left;
   line-height: 1.68;
+  padding-bottom: 5rem;
 }
 .overlay-close {
   position: fixed;
-  bottom: calc(var(--safe-bottom) + 1.2rem);
+  bottom: calc(var(--safe-bottom) + 1.8rem);
   left: 50%;
   transform: translateX(-50%);
   font-family: 'DM Sans', sans-serif;
@@ -293,9 +310,11 @@ body {
 
 <div class="bottom-bar">
   <span class="credit">© TRRNGR</span>
-  <button class="info"      id="infoBtn"  aria-label="About">INSTRUCCIONES</button>
-  <button class="terms-btn" id="termsBtn" aria-label="Terms">TÉRMINOS</button>
-  <button class="lang"      id="langBtn"  aria-label="Switch language">EN</button>
+  <div class="bottom-bar-center">
+    <button class="info"      id="infoBtn"  aria-label="About">INSTRUCCIONES</button>
+    <button class="terms-btn" id="termsBtn" aria-label="Terms">TÉRMINOS</button>
+  </div>
+  <button class="lang" id="langBtn" aria-label="Switch language">EN</button>
 </div>
 
 <div class="overlay" id="overlay">
