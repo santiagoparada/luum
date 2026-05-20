@@ -24,17 +24,16 @@ Licencia propia TRRNGR (no CC). © TRRNGR — parada.santi@gmail.com
 - Cambio de idioma ES/EN
 - Overlay de instrucciones (bilingüe)
 - Overlay de términos y condiciones (bilingüe, licencia propia TRRNGR)
-- Paywall: 10 mensajes gratis → bloqueo → $7 USD de por vida
-- localStorage: `luum_mensajes` (contador) / `luum_premium` (acceso)
-- Bypass developer: `?dev=true` en la URL activa luum_premium automáticamente
+- Acceso completamente gratuito, sin límites ni bloqueos
+- Sin localStorage — no se guarda ningún dato en el dispositivo
 
 ## Modelo de negocio
-- Usuario final: 10 mensajes gratis, luego $7 USD pago único de por vida
+- Acceso gratuito para todos los usuarios
 - Licencia comercial: uso comercial o adaptaciones requieren acuerdo con TRRNGR
 - Franquicia ligera: tarifa de entrada + porcentaje sobre ingresos derivados (a convenir)
 - Contacto: parada.santi@gmail.com
 
-## Próxima tarea: Google Play + RevenueCat
+## Próxima tarea: Google Play (TWA)
 
 ### 1. Preparar la PWA para TWA
 - Verificar que manifest.json tenga todos los campos requeridos por TWA
@@ -52,24 +51,10 @@ bubblewrap build
 - Crear cuenta de desarrollador ($25 USD, pago único)
 - Subir APK, completar ficha, publicar en acceso anticipado
 
-### 4. RevenueCat
-- Crear proyecto en revenuecat.com, conectar con Google Play
-- Definir producto: pago único $7 USD (tipo one_time / lifetime)
-- Integrar SDK en la app
-
-### 5. Reemplazar paywall temporal
-- El botón DESBLOQUEAR actualmente muestra `alert('Próximamente / Coming soon')`
-- Con RevenueCat: llamar a `RC.purchase()` → al completar → `luum_premium = 'true'`
-
 ## Notas de desarrollo
-- Reset paywall en consola del navegador:
-  ```js
-  localStorage.removeItem('luum_premium')
-  localStorage.removeItem('luum_mensajes')
-  ```
-- Bypass dev: abrir `santiagoparada.github.io/luum?dev=true` (persiste en localStorage)
 - Commits clave:
   - `eb536b1` — frases NIDO
   - `550f965` — instrucciones bilingüe
-  - `0e591ee` — paywall + términos
   - `6b0111f` — layout barra inferior
+  - `5dd5ff0` — eliminar paywall, LUUM gratuita
+  - `96745bc` — limpiar términos (sin referencias a pagos)

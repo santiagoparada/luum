@@ -8,8 +8,8 @@ Dispositivo generativo de estrategias para la práctica artística.
 
 LUUM cruza tres tablas de forma aleatoria en cada tiro:
 
-- **70 frases detonadoras** — preguntas y proposiciones conceptuales
-- **50 proposiciones artísticas** — acciones concretas para ejecutar
+- **90 frases detonadoras** — preguntas y proposiciones conceptuales
+- **64 proposiciones artísticas** — acciones concretas para ejecutar
 - **15 colores pop** — un fondo distinto cada vez
 
 La lógica es la del I Ching: las mismas variables producen combinaciones infinitas. Con el contenido actual hay más de **170.000 combinaciones posibles**.
@@ -23,6 +23,8 @@ Abrir el link en cualquier navegador. Tocar o hacer clic para lanzar una nueva c
 El botón **ES / EN** en la esquina inferior derecha cambia el idioma.
 
 Para instalar como app en el teléfono: **Compartir → Agregar a pantalla de inicio**.
+
+LUUM es completamente gratuita. Sin pagos, sin suscripciones.
 
 ---
 
