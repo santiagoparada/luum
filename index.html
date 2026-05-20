@@ -119,25 +119,32 @@ body {
 }
 .dot.active { background: rgba(0,0,0,0.6); }
 
-/* ── credit ── */
-.credit {
+/* ── bottom bar — flex row, no overlap on any screen ── */
+.bottom-bar {
   position: fixed;
-  bottom: calc(var(--safe-bottom) + 1.85rem);
-  left: calc(var(--safe-left) + 1.4rem);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 300;
-  letter-spacing: 0.18em;
-  color: rgba(0,0,0,0.38);
-  z-index: 20;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.2rem calc(var(--safe-bottom) + 0.5rem);
+  z-index: 210;
   pointer-events: none;
 }
+.bottom-bar > * { pointer-events: auto; }
 
-/* ── language toggle — z-index above paywall ── */
-.lang {
-  position: fixed;
-  bottom: calc(var(--safe-bottom) + 1.2rem);
-  right: calc(var(--safe-right) + 1.4rem);
+.credit {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  color: rgba(0,0,0,0.38);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.info, .terms-btn, .lang {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.65rem;
   font-weight: 300;
@@ -146,52 +153,12 @@ body {
   background: none;
   border: none;
   cursor: pointer;
-  z-index: 210;
-  padding: 10px 0 10px 10px;
+  padding: 8px;
   line-height: 1;
   transition: color 0.2s;
+  white-space: nowrap;
 }
-.lang:hover { color: rgba(0,0,0,0.65); }
-
-/* ── info button (INSTRUCCIONES — right of center-pair) ── */
-.info {
-  position: fixed;
-  bottom: calc(var(--safe-bottom) + 1.2rem);
-  right: calc(50% + 0.4rem);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 300;
-  letter-spacing: 0.18em;
-  color: rgba(0,0,0,0.38);
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 20;
-  padding: 10px;
-  line-height: 1;
-  transition: color 0.2s;
-}
-.info:hover { color: rgba(0,0,0,0.65); }
-
-/* ── terms button (TÉRMINOS — left of center-pair) ── */
-.terms-btn {
-  position: fixed;
-  bottom: calc(var(--safe-bottom) + 1.2rem);
-  left: calc(50% + 0.4rem);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 300;
-  letter-spacing: 0.18em;
-  color: rgba(0,0,0,0.38);
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 20;
-  padding: 10px;
-  line-height: 1;
-  transition: color 0.2s;
-}
-.terms-btn:hover { color: rgba(0,0,0,0.65); }
+.info:hover, .terms-btn:hover, .lang:hover { color: rgba(0,0,0,0.65); }
 
 /* ── overlays (info + terms) ── */
 .overlay {
@@ -222,9 +189,16 @@ body {
   max-width: 420px;
   white-space: pre-line;
 }
-/* terms content is document-style — left-align reads better */
+/* terms overlay: scrollable, smaller text, left-aligned */
+#termsOverlay {
+  justify-content: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 #termsOverlay .overlay-text {
+  font-size: clamp(0.75rem, 3vw, 0.88rem);
   text-align: left;
+  line-height: 1.68;
 }
 .overlay-close {
   position: fixed;
@@ -317,10 +291,12 @@ body {
   <div class="dot-track" id="dots"></div>
 </div>
 
-<span class="credit">© TRRNGR</span>
-<button class="info"      id="infoBtn"  aria-label="About">INSTRUCCIONES</button>
-<button class="terms-btn" id="termsBtn" aria-label="Terms">TÉRMINOS</button>
-<button class="lang"      id="langBtn"  aria-label="Switch language">EN</button>
+<div class="bottom-bar">
+  <span class="credit">© TRRNGR</span>
+  <button class="info"      id="infoBtn"  aria-label="About">INSTRUCCIONES</button>
+  <button class="terms-btn" id="termsBtn" aria-label="Terms">TÉRMINOS</button>
+  <button class="lang"      id="langBtn"  aria-label="Switch language">EN</button>
+</div>
 
 <div class="overlay" id="overlay">
   <p class="overlay-text" id="overlayText"></p>
@@ -765,6 +741,8 @@ function mostrarPaywall() {
   paywallBtn.textContent   = t.btn;
   paywallEl.style.backgroundColor = document.body.style.backgroundColor || '#FFE500';
   paywallEl.style.display = 'flex';
+  infoBtn.style.display  = 'none';
+  termsBtn.style.display = 'none';
 }
 
 function siguiente() {
@@ -879,6 +857,8 @@ document.addEventListener('touchend', e => {
 window.addEventListener('storage', () => {
   if (esPremium() && paywallEl.style.display === 'flex') {
     paywallEl.style.display = 'none';
+    infoBtn.style.display  = '';
+    termsBtn.style.display = '';
   }
 });
 </script>
