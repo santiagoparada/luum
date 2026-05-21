@@ -78,7 +78,29 @@ El contenido surge del cruce entre:
 
 El proyecto corre como sitio estático. Cualquier plataforma que sirva HTML funciona.
 
-Actualmente desplegado en **GitHub Pages**.
+Actualmente desplegado en **GitHub Pages**: https://santiagoparada.github.io/luum/
+
+---
+
+## Android / TWA
+
+| Campo | Valor |
+|---|---|
+| Título | LUUM — Slow Fields |
+| Package name | io.github.santiagoparada.luum |
+| PWA URL | https://santiagoparada.github.io/luum/ |
+| Herramienta | Bubblewrap CLI |
+| Proyecto Android | ~/twa-luum |
+| Keystore | ~/twa-luum/android.keystore (alias: `android`) |
+
+**Estado (2026-05-21):** Proyecto Bubblewrap generado. Primer build pendiente.
+
+Próximos pasos:
+1. `bubblewrap build` → obtener APK firmado
+2. Extraer SHA-256 fingerprint del keystore con `keytool`
+3. Publicar `/.well-known/assetlinks.json` en este repo con el fingerprint
+4. Probar TWA en dispositivo
+5. Subir a Google Play Console
 
 ---
 

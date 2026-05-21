@@ -33,23 +33,30 @@ Licencia propia TRRNGR (no CC). © TRRNGR — parada.santi@gmail.com
 - Franquicia ligera: tarifa de entrada + porcentaje sobre ingresos derivados (a convenir)
 - Contacto: parada.santi@gmail.com
 
-## Próxima tarea: Google Play (TWA)
+## Android / TWA — Estado actual (2026-05-21)
 
-### 1. Preparar la PWA para TWA
-- Verificar que manifest.json tenga todos los campos requeridos por TWA
-- Agregar Digital Asset Links en `/.well-known/assetlinks.json`
-- Asociar el dominio santiagoparada.github.io con el package name Android
+### Datos de la app
+- **Título:** LUUM — Slow Fields
+- **Package name:** io.github.santiagoparada.luum
+- **PWA URL:** https://santiagoparada.github.io/luum/
+- **Repo fuente:** ~/projects/LUUM
+- **Proyecto Android (Bubblewrap):** ~/twa-luum
+- **Keystore:** ~/twa-luum/android.keystore (alias: `android`)
 
-### 2. Generar el APK con Bubblewrap
-```bash
-npm i -g @bubblewrap/cli
-bubblewrap init --manifest https://santiagoparada.github.io/luum/manifest.json
-bubblewrap build
-```
+### Fase actual
+Proyecto Android generado con Bubblewrap (`bubblewrap init` completado). **Primer build pendiente.**
 
-### 3. Google Play Console
-- Crear cuenta de desarrollador ($25 USD, pago único)
-- Subir APK, completar ficha, publicar en acceso anticipado
+### Próximos pasos
+1. Ejecutar `bubblewrap build` en ~/twa-luum y obtener el APK firmado
+2. Extraer el SHA-256 fingerprint del keystore:
+   ```bash
+   keytool -list -v -keystore ~/twa-luum/android.keystore -alias android
+   ```
+3. Crear `/.well-known/assetlinks.json` en el repo fuente con el fingerprint obtenido
+4. Verificar el Digital Asset Link en https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://santiagoparada.github.io&relation=delegate_permission/common.handle_all_urls
+5. Probar el TWA en dispositivo/emulador antes de subir
+6. Preparar ficha de Google Play (descripción, capturas, íconos)
+7. Crear cuenta de desarrollador en Google Play Console ($25 USD, pago único) y publicar en acceso anticipado
 
 ## Notas de desarrollo
 - Commits clave:
