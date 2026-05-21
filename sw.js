@@ -1,6 +1,6 @@
 const CACHE = 'luum-v2';
-const ASSETS = ['/', '/index.html', '/manifest.json',
-  '/icons/icon-192.png', '/icons/icon-512.png'];
+const ASSETS = ['/luum/', '/luum/index.html', '/luum/manifest.json',
+  '/luum/icons/icon-192.png', '/luum/icons/icon-512.png'];
  
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
