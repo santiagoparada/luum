@@ -1,4 +1,6 @@
-# LUUM
+# LUUM — Slow Fields
+
+LUUM — Slow Fields is a contemplative mobile web app built around slow atmospheres, minimal interaction, and generative states of attention.
 
 Dispositivo generativo de estrategias para la práctica artística.
 
