@@ -10,3 +10,5 @@ Thumbs.db
 # Node (por si acaso para cuando llegue Bubblewrap)
 node_modules/
 *.log
+keystorelocation.txt
+android.keystore
